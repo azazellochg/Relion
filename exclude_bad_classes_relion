@@ -1,0 +1,21 @@
+#!/bin/bash
+ 
+echo "Input PLT file containing the bad class numbers"
+PltFile=`zenity --title="Plt file" --file-selection --file-filter="Plt|*.plt"`
+echo ""
+echo "Input data STAR file containing the iteration you want to use"
+DataStar=`zenity --title="data star file" --file-selection --file-filter="STAR|*data.star"`
+ 
+FieldNum=`cat ${DataStar} | grep _rlnClassNumber | awk '{print $2}' | sed "s/#//"`
+ 
+echo "Output file name (.star):"
+read outfile
+ 
+#read line by line from first plt file into array
+#print header of star file, then compare FieldNum from second file with array values, if no match -> print
+ 
+awk -v f=$FieldNum 'NR==FNR{a[$0];next}NF<3||!($f in a)' $PltFile $DataStar > $PWD/$outfile
+ 
+echo "====================================================="
+echo "        The new star file:$outfile was created"
+echo "====================================================="
