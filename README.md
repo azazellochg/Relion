@@ -1,7 +1,7 @@
 Relion
 ======
 
-###Scripts for Relion 1.2
+###Scripts for Relion 1.2/1.3
 
 #####exclude_bad_classes_relion
 
@@ -23,3 +23,6 @@ The input parameter is:
 * Data STAR file containing the last CL2D iteration
 
 ---
+#####remove_bad_img.sh
+
+Sometimes for negative stain "remove dust" options in relion are not working properly, creating strange pattern of dots. Here the script will use IMAGIC to remove images with extremely low/high pixel densities. Particles order should be the same in imagic stack and corresponding star file!
