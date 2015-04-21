@@ -1,0 +1,64 @@
+#!/bin/bash
+#This script will extract coordinate of all particles from gempicker run and convert them to box format,
+#then remove bad particles (not extracted in relion) and create a data star file for particle sorting according to picking references
+
+#comments
+ptcls_good="all_particles" # star file with good particles extracted in relion
+output="output" # name of output gempicker folder with picking results (*.txt coordinate files)
+coarse="2" # N times mics were coarsed during gempicker run
+micsize="1024" # size of coarsed mics during gempicker run
+debug="1" # if 0 - remove intermediate files
+
+[ -d tmp ] && rm -rf tmp
+mkdir tmp
+echo "data_
+
+loop_ 
+_rlnMicrographName #1 
+_rlnCoordinateX #2 
+_rlnCoordinateY #3
+_rlnAnglePsi #4 
+_rlnAutopickFigureOfMerit #5 
+_rlnClassNumber #6" > tmp/del.star
+
+cd ${PWD}/${output}/pik_coord
+echo "Acquiring results from gempicker..."
+awk -v coarse=$coarse -v micsize=$micsize '(NR>1){ printf "Micrographs/%s\t%.6f\t%.6f\t%.6f\t%.6f\t%d\n", FILENAME, (micsize-1-$4)*coarse, $3*coarse, $7, $2, $6 }' *.txt >> ../../tmp/del.star
+
+cd ../../
+#change appropriately, to match uncoarsed micrograph name
+sed -i 's/_c2f30.txt/.mrc/g' tmp/del.star
+
+#check if we have removed mics and boxes after gempicker run, keep only good ones (extracted in relion)
+echo "Removing bad non-extracted particles..."
+awk 'NR==FNR{a[$1];b[$2];c[$3];next}NF<3||($1 in a&&$2 in b&&$3 in c)' ${ptcls_good}.star tmp/del.star > tmp/del2.star
+
+#merge two star files adding 3 more columns (_rlnAnglePsi, _rlnAutopickFigureOfMerit, _rlnClassNumber) at the end of particles.star
+echo "data_
+
+loop_ 
+_rlnMicrographName #1 
+_rlnCoordinateX #2 
+_rlnCoordinateY #3 
+_rlnImageName #4 
+_rlnDefocusU #5 
+_rlnDefocusV #6 
+_rlnDefocusAngle #7 
+_rlnVoltage #8 
+_rlnSphericalAberration #9 
+_rlnAmplitudeContrast #10 
+_rlnMagnification #11 
+_rlnDetectorPixelSize #12 
+_rlnCtfFigureOfMerit #13
+_rlnAnglePsi #14
+_rlnAutopickFigureOfMerit #15
+_rlnClassNumber #16
+" > ${ptcls_good}_with_refs.star
+
+awk 'NF>3{print $4,$5,$6}' tmp/del2.star > tmp/del3.star
+awk 'NF>3' ${ptcls_good}.star > tmp/del4.star
+echo "Adding reference numbers..."
+pr -mJt -s' ' tmp/del4.star tmp/del3.star >> ${ptcls_good}_with_refs.star
+
+[ $debug -eq 0 ] && rm -rf tmp
+echo "New particle star file with gempicker reference numbers created: ${ptcls_good}_with_refs.star"
