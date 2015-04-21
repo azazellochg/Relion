@@ -14,6 +14,19 @@ The input parameters are:
 * Name of the output star file
 
 ---
+#####make_star_for_ptcl_sort
+
+This script will extract coordinates of all particles from gempicker output and convert them to box format, then remove bad particles (not extracted in relion) and create a data star file for particle sorting according to picking references.
+
+*Protocol:*
+
+0. Do CTF correction and preliminary 2D classification in Relion to generate 2D references for autopicking
+1. Run gempicker using 2D class average references from relion (do not renumber them!), rescale box files, remove particles too close to the border (use change_box script)
+2. Extract particles in relion, creating data star file
+3. Run this script, it will add reference-related columns to input star file
+4. Run particle sorting in relion, remove particles with too low/high Z-score
+
+---
 #####plot_classes
 
 You may use the following script to plot particle distribution inside 2D classes from your dataset. The script also prints min,max and average number of particles over all classes. It will use the data star file after successfull 2D classification.
