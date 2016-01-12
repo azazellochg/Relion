@@ -1,5 +1,10 @@
 Particle migration analysis
 ======
+
+Recently developed classification methods have enabled resolving multiple biological structures from cryo-EM data collected on heterogeneous biological samples. However, there remains the problem of how to base the decisions in the classification on the statistics of the cryo-EM data, to reduce the subjectivity in the process. Here, we propose a quantitative analysis to determine the iteration of convergence and the number of distinguishable classes, based on the statistics of the single particles in an iterative classification scheme. We start the classification with more number of classes than anticipated based on prior knowledge, and then combine the classes that yield similar reconstructions. The classes yielding similar reconstructions can be identified from the migrating particles (jumpers) during consecutive iterations after the iteration of convergence. We therefore termed the method “jumper analysis”, and applied it to the output of RELION 3D classification of a benchmark experimental dataset. This work is a step forward toward fully automated single-particle reconstruction and classification of cryo-EM data.
+
+
+http://franklab.cpmc.columbia.edu/franklab/wp-content/uploads/2014/08/JumperAnalysis.zip 
 Last updated Oct 20, 2014
 
 ###Introduction
