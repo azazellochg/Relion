@@ -1,7 +1,13 @@
 Relion
 ======
 
-###Scripts for Relion 1.2/1.3
+###Scripts for Relion 1.2+
+
+#####JumperAnalysis
+
+This MATLAB package provides a quantitative analysis to determine the iteration of convergence and the number of distinguishable classes, based on the statistics of the single particles in an iterative classification scheme, as used by Relion 3D classification.
+
+---
 
 #####exclude_bad_classes_relion
 
