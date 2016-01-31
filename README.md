@@ -45,3 +45,12 @@ The input parameter is:
 #####remove_bad_img.sh
 
 Sometimes for negative stain "remove dust" options in relion are not working properly, creating strange pattern of dots. Here the script will use IMAGIC to remove images with extremely low/high pixel densities. Particles order should be the same in imagic stack and corresponding star file!
+
+---
+#####renumber_classes
+
+This small script will renumber class numbers in input star file. This can be useful when one wants to do particle sorting in Relion with only selected (i.e., good ones) 2D classes and not all of them, as suggested by default. The suggested procedure is the following:
+* extract (+regroup if necessary) particles according to selected 2D classes in Relion display
+* extract class images of the previous selection
+* run the script on both files
+* run _Particle sorting_ in Relion using these two input files
