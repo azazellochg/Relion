@@ -54,3 +54,8 @@ This small script will renumber class numbers in input star file. This can be us
 * extract class images of the previous selection
 * run the script on both files
 * run _Particle sorting_ in Relion using these two input files
+
+---
+#####star_fix_origins.sh
+
+This script will parse an input particle star file and will create corrected coordinate star files for the particle re-extraction in Relion as well as micrograph star file. This can be useful e.g. after 3D refinement to decrease interpolation. It is recommended to start the script in Relion project folder so it can locate the micrographs correctly!
