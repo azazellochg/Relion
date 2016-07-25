@@ -62,7 +62,7 @@ fom=`awk 'NF<3{print}' $1 | grep "_rlnAutopickFigureOfMerit" | cut -d'#' -f2`
 mic=`awk 'NF<3{print}' $1 | grep "_rlnMicrographName" | cut -d'#' -f2`
 oriX=`awk 'NF<3{print}' $1 | grep "_rlnOriginX" | cut -d'#' -f2`
 oriY=`awk 'NF<3{print}' $1 | grep "_rlnOriginY" | cut -d'#' -f2`
-ctfim=`awk 'NF<3{print}' $1 | grep "_rlnCtfImage" | cut -d'#' -f2`
+#ctfim=`awk 'NF<3{print}' $1 | grep "_rlnCtfImage" | cut -d'#' -f2`
 defu=`awk 'NF<3{print}' $1 | grep "_rlnDefocusU" | cut -d'#' -f2`
 defv=`awk 'NF<3{print}' $1 | grep "_rlnDefocusV" | cut -d'#' -f2`
 defa=`awk 'NF<3{print}' $1 | grep "_rlnDefocusAngle" | cut -d'#' -f2`
@@ -81,7 +81,12 @@ awk_command='NF>3{print $mic,$xcrd-coarse*$oriX,$ycrd-coarse*$oriY,$psi,$cls,$fo
 awk -v coarse=$coarse -v xcrd=$xcrd -v ycrd=$ycrd -v psi=$psi -v cls=$cls -v fom=$fom -v mic=$mic -v oriX=$oriX -v oriY=$oriY "${awk_command}" "$star" > .tmp_coords
 }
 
-if [ -z $fom ]; then fom=999; FOM; fi
+if [ -z $fom ]
+        then fom=999
+        FOM
+else
+        FOM
+fi
 
 # create new coord star files
 awk '{print $1}' .tmp_coords | sort | uniq > .tmp_mics
@@ -97,8 +102,8 @@ do
 done < .tmp_mics
 
 # create new mics star file
-awk_command2='NF>3{print $mic,$mic,$defu,$defv,$defa,$vol,$sa,$ac,$mag,$det,$ctffom}'
-awk -v mic=$mic -v defu=$defu -v defv=$defv -v defa=$defa -v vol=$vol -v sa=$sa -v ac=$ac -v mag=$mag -v det=$det -v ctffom=$ctffom "${awk_command2}" "$star" > .tmp_mics2
+awk_command2='NF>3{print $mic,$mic,$defu,$defv,$defa,$vol,$sa,$ac,$mag,$det/coarse,$ctffom}'
+awk -v mic=$mic -v defu=$defu -v defv=$defv -v defa=$defa -v vol=$vol -v sa=$sa -v ac=$ac -v mag=$mag -v coarse=$coarse -v det=$det -v ctffom=$ctffom "${awk_command2}" "$star" > .tmp_mics2
 sed -i 's/.mrc/.ctf/2' .tmp_mics2
 cat .tmp_mics2 | uniq > .tmp_mics2b
 cat .tmp_header_mics > micrographs_corr.star
