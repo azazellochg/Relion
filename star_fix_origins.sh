@@ -104,8 +104,8 @@ done < .tmp_mics
 # create new mics star file
 awk_command2='NF>3{print $mic,$mic,$defu,$defv,$defa,$vol,$sa,$ac,$mag,$det/coarse,$ctffom}'
 awk -v mic=$mic -v defu=$defu -v defv=$defv -v defa=$defa -v vol=$vol -v sa=$sa -v ac=$ac -v mag=$mag -v coarse=$coarse -v det=$det -v ctffom=$ctffom "${awk_command2}" "$star" > .tmp_mics2
-sed -i 's/.mrc/.ctf/2' .tmp_mics2
-cat .tmp_mics2 | uniq > .tmp_mics2b
+sed -i 's/.mrc/.ctf:mrc/2' .tmp_mics2
+sort .tmp_mics2 | uniq > .tmp_mics2b
 cat .tmp_header_mics > micrographs_corr.star
 awk '{printf "%s %s%13.6f%13.6f%13.6f%13.6f%13.6f%13.6f %13s%13.6f%13.6f\n",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' .tmp_mics2b >> micrographs_corr.star
 echo -e "\nDONE!\nNew coordinate files are *_corr.star. Micrographs are in micrographs_corr.star file"
