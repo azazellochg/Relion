@@ -96,7 +96,7 @@ total=`wc -l < .tmp_mics`
 count=1
 while read line
 do
-        coordfile=`echo "$line" | sed 's/.mrc/_"$suffix".star/'`
+        coordfile=`echo "$line" | sed 's/.mrc/_'$suffix'.star/'`
         echo -ne "Processing micrograph ${count}/${total}...\r"
         cat .tmp_header_ptcls > "$coordfile"
         awk '{if($1=="'$line'") {printf "%12.6f%13.6f%13.6f%13d%13.6f\n",$2,$3,$4,$5,$6}}' .tmp_coords >> "$coordfile"
