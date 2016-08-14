@@ -6,13 +6,15 @@ This can be useful e.g. after 3D refinement to decrease interpolation.
 
 It is recommended to start the script in Relion project folder so it can locate micrographs correctly!"
 #
-# Usage: star_fix_origins.sh file.star
-# Output: for each micrograph creates MicName_corr.star coordinate file
+# Usage: star_fix_origins.sh file.star outputSuffix
+# Output: for each micrograph creates MicName_outputSuffix.star coordinate file
 
-if [ "$#" -ne 1 ] || [ ! `echo "$1" | grep ".star"` ]; then
-        echo -e "\nUsage: `basename $0` file.star\n"
+if [ "$#" -lt 2 ] || [ ! `echo "$1" | grep ".star"` ]; then
+        echo -e "\nUsage: `basename $0` file.star outputSuffix\n"
         exit 1
 fi
+suffix="$2"
+echo -e "Output files will have suffix: _${suffix}.star\n"
 echo -n "It is assumed that micrographs are uncoarsed, while particles might be not. Provide a coarse factor for this particle star file (default 1): "
 read coarse
 coarse=${coarse:-1}
@@ -94,7 +96,7 @@ total=`wc -l < .tmp_mics`
 count=1
 while read line
 do
-        coordfile=`echo "$line" | sed 's/.mrc/_corr.star/'`
+        coordfile=`echo "$line" | sed 's/.mrc/_${suffix}.star/'`
         echo -ne "Processing micrograph ${count}/${total}...\r"
         cat .tmp_header_ptcls > "$coordfile"
         awk '{if($1=="'$line'") {printf "%12.6f%13.6f%13.6f%13d%13.6f\n",$2,$3,$4,$5,$6}}' .tmp_coords >> "$coordfile"
@@ -106,7 +108,7 @@ awk_command2='NF>3{print $mic,$mic,$defu,$defv,$defa,$vol,$sa,$ac,$mag,$det/coar
 awk -v mic=$mic -v defu=$defu -v defv=$defv -v defa=$defa -v vol=$vol -v sa=$sa -v ac=$ac -v mag=$mag -v coarse=$coarse -v det=$det -v ctffom=$ctffom "${awk_command2}" "$star" > .tmp_mics2
 sed -i 's/.mrc/.ctf:mrc/2' .tmp_mics2
 sort .tmp_mics2 | uniq > .tmp_mics2b
-cat .tmp_header_mics > micrographs_corr.star
-awk '{printf "%s %s%13.6f%13.6f%13.6f%13.6f%13.6f%13.6f %13s%13.6f%13.6f\n",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' .tmp_mics2b >> micrographs_corr.star
-echo -e "\nDONE!\nNew coordinate files are *_corr.star. Micrographs are in micrographs_corr.star file"
+cat .tmp_header_mics > micrographs_${suffix}.star
+awk '{printf "%s %s%13.6f%13.6f%13.6f%13.6f%13.6f%13.6f %13s%13.6f%13.6f\n",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' .tmp_mics2b >> micrographs_${suffix}.star
+echo -e "\nDONE!\nNew coordinate files are *_${suffix}.star. Micrographs are in micrographs_${suffix}.star file"
 rm -f .tmp_*
