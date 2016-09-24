@@ -35,7 +35,7 @@ fi
 [ ! -f $1 ] && echo "Error: file $1 does not exist" && exit 1
 [[ $2 != "rot" && $2 != "tilt" && $2 != "psi" ]] && echo "Error: unknown angle $2. Please, specify rot, tilt or psi" && exit 1
 [ $3 -gt $4 ] && echo "Error: min > max angle" && exit 1
-[[ $3 -le -180 || $3 -ge 180 || $4 -le -180 || $4 -ge 180 ]] && \
+[[ $3 -lt -180 || $3 -gt 180 || $4 -lt -180 || $4 -gt 180 ]] && \
 echo "Error: wrong angles. Default ranges are: -180<rot<180, 0<tilt<180, -180<psi<180" && exit 1
 output=`echo $1 | sed 's/.star/_reweighted.star/'`
 [ -f $output ] && echo "Error: output file $output already exists" && exit 1
