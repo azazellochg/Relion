@@ -47,6 +47,11 @@ The input parameter is:
 Sometimes for negative stain "remove dust" options in relion are not working properly, creating strange pattern of dots. Here the script will use IMAGIC to remove images with extremely low/high pixel densities. Particles order should be the same in imagic stack and corresponding star file!
 
 ---
+#####remove_pref_views.sh
+
+The script removes over-represented views within Relion STAR files. First, the user should plot [angular distributions](https://github.com/leschzinerlab/Relion/blob/master/plot_indivEuler_histogram_fromStarFile.py) to find the preferential views. The script requires angular range and number of particles to be removed. Optionally, before removing particles can be sorted by MaxProb or likelihood value (to remove particles withing specified angular range with the worst MaxProb or likelihood).
+
+---
 #####renumber_classes
 
 This small script will renumber class numbers in input star file. This can be useful when one wants to do particle sorting in Relion with only selected (i.e., good ones) 2D classes and not all of them, as suggested by default. The suggested procedure is the following:
